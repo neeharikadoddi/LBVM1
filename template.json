@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_LBVM1_name": {
+            "defaultValue": "LBVM1",
+            "type": "String"
+        },
+        "availabilitySets_TEST1_externalid": {
+            "defaultValue": "/subscriptions/cc7a6381-c0b9-4005-ab96-5f428e4dd7c0/resourceGroups/LBRG/providers/Microsoft.Compute/availabilitySets/TEST1",
+            "type": "String"
+        },
+        "disks_LBVM1_OsDisk_1_3a4a3a6412bc4f17ae4474bc7fa488de_externalid": {
+            "defaultValue": "/subscriptions/cc7a6381-c0b9-4005-ab96-5f428e4dd7c0/resourceGroups/LBRG/providers/Microsoft.Compute/disks/LBVM1_OsDisk_1_3a4a3a6412bc4f17ae4474bc7fa488de",
+            "type": "String"
+        },
+        "networkInterfaces_lbvm1482_externalid": {
+            "defaultValue": "/subscriptions/cc7a6381-c0b9-4005-ab96-5f428e4dd7c0/resourceGroups/LBRG/providers/Microsoft.Network/networkInterfaces/lbvm1482",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('virtualMachines_LBVM1_name')]",
+            "location": "eastus",
+            "properties": {
+                "availabilitySet": {
+                    "id": "[parameters('availabilitySets_TEST1_externalid')]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_B2s"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2019-datacenter-gensecond",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_LBVM1_name'), '_OsDisk_1_3a4a3a6412bc4f17ae4474bc7fa488de')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "[parameters('disks_LBVM1_OsDisk_1_3a4a3a6412bc4f17ae4474bc7fa488de_externalid')]"
+                        },
+                        "deleteOption": "Delete",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_LBVM1_name')]",
+                    "adminUsername": "Azure",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByOS",
+                            "assessmentMode": "ImageDefault",
+                            "enableHotpatching": false
+                        },
+                        "enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('networkInterfaces_lbvm1482_externalid')]",
+                            "properties": {
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    ]
+}

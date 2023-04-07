@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_LBVM1_name": {
+            "value": null
+        },
+        "availabilitySets_TEST1_externalid": {
+            "value": null
+        },
+        "disks_LBVM1_OsDisk_1_3a4a3a6412bc4f17ae4474bc7fa488de_externalid": {
+            "value": null
+        },
+        "networkInterfaces_lbvm1482_externalid": {
+            "value": null
+        }
+    }
+}
